@@ -13,6 +13,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${geist.variable} h-full antialiased`}>
+      <head>
+        <script src="https://reverse-bubble.up.railway.app/overlay/v1/rb-overlay.js" defer data-rb-project="a38998f6-d6ea-4c14-a681-ab45298fe9bd" data-rb-token="rbo_NHsL-3HaURJuCFotG1Lbgu9vc9Fxy5Qj" />
+      </head>
       <body className="bg-stone-50 min-h-screen">
         <Nav />
         <main className="max-w-5xl mx-auto px-4 py-8">{children}</main>
