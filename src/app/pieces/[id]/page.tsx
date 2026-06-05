@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { Piece, STAGE_LABELS, STAGE_ORDER, FORMING_METHOD_LABELS, FIRING_TYPE_LABELS, LAYER_TYPE_LABELS } from '@/types'
-import { getPiece, advanceStage, deletePiece } from '@/lib/store'
+import { Piece, STAGE_LABELS, STAGE_ORDER, FORMING_METHOD_LABELS, FIRING_TYPE_LABELS, LAYER_TYPE_LABELS, SurfaceLayer } from '@/types'
+import { getPiece, advanceStage, deletePiece, savePiece } from '@/lib/store'
 import { StageProgress } from '@/components/StageProgress'
+import { SurfaceLayerEditor } from '@/components/SurfaceLayerEditor'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { formatDate } from '@/lib/utils'
@@ -51,6 +52,14 @@ export default function PieceDetailPage() {
     deletePiece(id)
     router.push('/')
   }
+
+  function handleLayersChange(layers: SurfaceLayer[]) {
+    if (!piece) return
+    const updated = savePiece({ ...piece, surface_layers: layers })
+    setPiece(updated)
+  }
+
+  const isGlazing = piece.stage === 'glazing'
 
   return (
     <div className="max-w-2xl mx-auto space-y-8">
@@ -123,44 +132,53 @@ export default function PieceDetailPage() {
         </section>
       )}
 
-      {piece.surface_layers.length > 0 && (
-        <section className="space-y-3">
-          <h2 className="text-base font-semibold text-stone-800 flex items-center gap-2">
-            <Layers className="h-4 w-4" /> Surface Layers
-            <span className="text-xs text-stone-400 font-normal">bottom → top</span>
-          </h2>
-          <div className="space-y-2">
-            {piece.surface_layers.map((layer, i) => (
-              <div
-                key={layer.id}
-                className={cn(
-                  'rounded-lg border p-3 flex items-center gap-3',
-                  LAYER_TYPE_COLORS[layer.type] || 'bg-gray-50 border-gray-200'
-                )}
-              >
-                <span className="text-xs font-bold w-5 text-center opacity-40">{i + 1}</span>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-xs uppercase tracking-wide opacity-60 font-medium">
-                      {LAYER_TYPE_LABELS[layer.type]}
-                    </span>
-                    <span className="font-medium text-sm">
-                      {layer.product_name || <span className="opacity-50 italic">unnamed</span>}
-                    </span>
-                    {layer.brand && <span className="text-xs opacity-60">by {layer.brand}</span>}
+      <section className="space-y-3">
+        <h2 className="text-base font-semibold text-stone-800 flex items-center gap-2">
+          <Layers className="h-4 w-4" /> Surface Layers
+          {!isGlazing && <span className="text-xs text-stone-400 font-normal">bottom → top</span>}
+        </h2>
+        {isGlazing ? (
+          <SurfaceLayerEditor
+            layers={piece.surface_layers}
+            onChange={handleLayersChange}
+          />
+        ) : (
+          piece.surface_layers.length > 0 ? (
+            <div className="space-y-2">
+              {piece.surface_layers.map((layer, i) => (
+                <div
+                  key={layer.id}
+                  className={cn(
+                    'rounded-lg border p-3 flex items-center gap-3',
+                    LAYER_TYPE_COLORS[layer.type] || 'bg-gray-50 border-gray-200'
+                  )}
+                >
+                  <span className="text-xs font-bold w-5 text-center opacity-40">{i + 1}</span>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-xs uppercase tracking-wide opacity-60 font-medium">
+                        {LAYER_TYPE_LABELS[layer.type]}
+                      </span>
+                      <span className="font-medium text-sm">
+                        {layer.product_name || <span className="opacity-50 italic">unnamed</span>}
+                      </span>
+                      {layer.brand && <span className="text-xs opacity-60">by {layer.brand}</span>}
+                    </div>
+                    <div className="flex items-center gap-3 mt-0.5 text-xs opacity-70 flex-wrap">
+                      {layer.color_description && <span>{layer.color_description}</span>}
+                      {layer.coats && <span>{layer.coats} coats</span>}
+                      {layer.application_method && <span>{layer.application_method}</span>}
+                    </div>
+                    {layer.notes && <p className="text-xs opacity-60 mt-1">{layer.notes}</p>}
                   </div>
-                  <div className="flex items-center gap-3 mt-0.5 text-xs opacity-70 flex-wrap">
-                    {layer.color_description && <span>{layer.color_description}</span>}
-                    {layer.coats && <span>{layer.coats} coats</span>}
-                    {layer.application_method && <span>{layer.application_method}</span>}
-                  </div>
-                  {layer.notes && <p className="text-xs opacity-60 mt-1">{layer.notes}</p>}
                 </div>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm text-stone-400 italic">No surface layers recorded.</p>
+          )
+        )}
+      </section>
 
       <section className="space-y-3">
         <h2 className="text-base font-semibold text-stone-800 flex items-center gap-2">
