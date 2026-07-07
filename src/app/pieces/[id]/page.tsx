@@ -8,6 +8,7 @@ import { StageProgress } from '@/components/StageProgress'
 import { SurfaceLayerEditor } from '@/components/SurfaceLayerEditor'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/dialog'
 import { formatDate } from '@/lib/utils'
 import { Edit, Trash2, ChevronRight, Camera, Layers, Ruler, Weight, Flame } from 'lucide-react'
 import Link from 'next/link'
@@ -28,6 +29,7 @@ export default function PieceDetailPage() {
   const { id } = useParams<{ id: string }>()
   const router = useRouter()
   const [piece, setPiece] = useState<Piece | null>(null)
+  const [confirmAdvanceOpen, setConfirmAdvanceOpen] = useState(false)
 
   useEffect(() => {
     const p = getPiece(id)
@@ -42,9 +44,15 @@ export default function PieceDetailPage() {
   const nextStage = !isComplete ? STAGE_ORDER[currentStageIdx + 1] : null
 
   function handleAdvance() {
+    if (!piece || !nextStage) return
+    setConfirmAdvanceOpen(true)
+  }
+
+  function handleConfirmAdvance() {
     if (!piece) return
     const updated = advanceStage(piece)
     setPiece(updated)
+    setConfirmAdvanceOpen(false)
   }
 
   function handleDelete() {
@@ -264,6 +272,27 @@ export default function PieceDetailPage() {
           ))}
         </div>
       )}
+
+      <Dialog open={confirmAdvanceOpen} onOpenChange={setConfirmAdvanceOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Advance to {nextStage ? STAGE_LABELS[nextStage] : ''}?</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-stone-600 mb-6">
+            This will move <strong>{piece?.title}</strong> from{' '}
+            <strong>{STAGE_LABELS[piece?.stage ?? 'wedging']}</strong> to{' '}
+            <strong>{nextStage ? STAGE_LABELS[nextStage] : ''}</strong>. This cannot be undone.
+          </p>
+          <div className="flex justify-end gap-3">
+            <DialogClose asChild>
+              <Button variant="outline" size="sm">Cancel</Button>
+            </DialogClose>
+            <Button variant="clay" size="sm" onClick={handleConfirmAdvance}>
+              Confirm
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
