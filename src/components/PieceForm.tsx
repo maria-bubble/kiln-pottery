@@ -1,15 +1,16 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   Piece,
+  PieceType,
   FORMING_METHOD_LABELS,
   FIRING_TYPE_LABELS,
   FormingMethod,
   FiringType,
 } from '@/types'
-import { savePiece } from '@/lib/store'
+import { savePiece, getPreferences } from '@/lib/store'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { Textarea } from './ui/textarea'
