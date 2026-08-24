@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { Piece, Stage, FORMING_METHOD_LABELS, FIRING_TYPE_LABELS, LAYER_TYPE_LABELS, SurfaceLayer } from '@/types'
-// Note: STAGE_LABELS is intentionally not imported — stage labels are resolved dynamically via getStages()
 import { getPiece, advanceStage, deletePiece, savePiece, getStages } from '@/lib/store'
 import { StageProgress } from '@/components/StageProgress'
 import { SurfaceLayerEditor } from '@/components/SurfaceLayerEditor'
