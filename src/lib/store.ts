@@ -54,7 +54,7 @@ export function createNewPiece(overrides: Partial<Piece> = {}): Piece {
     id: generateId(),
     user_id: 'local',
     title: 'Untitled Piece',
-    stage: 'forming',
+    stage: prefs.default_stage || prefs.stages[0] || DEFAULT_STAGE,
     forming_method: prefs.default_forming_method,
     clay_body: prefs.default_clay_body,
     firing_type: prefs.default_firing_type,
