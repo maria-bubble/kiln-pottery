@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { UserPreferences, FormingMethod, FiringType, Stage, FORMING_METHOD_LABELS, FIRING_TYPE_LABELS } from '@/types'
-import { getPreferences, savePreferences, DEFAULT_STAGES } from '@/lib/store'
+import { UserPreferences, FormingMethod, FiringType, Stage, PieceType, FORMING_METHOD_LABELS, FIRING_TYPE_LABELS } from '@/types'
+import { getPreferences, savePreferences, DEFAULT_STAGES, DEFAULT_PIECE_TYPES } from '@/lib/store'
 import { SurfaceLayerEditor } from '@/components/SurfaceLayerEditor'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
