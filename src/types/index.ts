@@ -147,11 +147,23 @@ export const FIRING_TYPE_LABELS: Record<FiringType, string> = {
   pit: 'Pit Fired',
 }
 
-export const STAGE_COLORS: Record<PieceStage, string> = {
-  forming: 'bg-amber-100 text-amber-800',
-  drying: 'bg-yellow-100 text-yellow-800',
-  bisque_fired: 'bg-orange-100 text-orange-800',
-  glazing: 'bg-blue-100 text-blue-800',
-  glaze_fired: 'bg-purple-100 text-purple-800',
-  complete: 'bg-green-100 text-green-800',
+// A fixed palette cycled by stage index; fallback for any index beyond the list.
+export const STAGE_PALETTE: string[] = [
+  'bg-amber-100 text-amber-800',
+  'bg-yellow-100 text-yellow-800',
+  'bg-orange-100 text-orange-800',
+  'bg-blue-100 text-blue-800',
+  'bg-purple-100 text-purple-800',
+  'bg-green-100 text-green-800',
+  'bg-teal-100 text-teal-800',
+  'bg-rose-100 text-rose-800',
+  'bg-sky-100 text-sky-800',
+  'bg-indigo-100 text-indigo-800',
+]
+
+/** Returns the Tailwind badge classes for a stage given the ordered stages array. */
+export function getStageColor(stage: string, stages: string[]): string {
+  const idx = stages.indexOf(stage)
+  if (idx < 0) return 'bg-stone-100 text-stone-600'
+  return STAGE_PALETTE[idx % STAGE_PALETTE.length]
 }
