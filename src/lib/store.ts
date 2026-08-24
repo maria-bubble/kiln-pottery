@@ -69,21 +69,16 @@ export function createNewPiece(overrides: Partial<Piece> = {}): Piece {
 }
 
 export function advanceStage(piece: Piece): Piece {
-  const stages: PieceStage[] = [
-    'forming',
-    'drying',
-    'bisque_fired',
-    'glazing',
-    'glaze_fired',
-    'complete',
-  ]
+  const prefs = getPreferences()
+  const stages = prefs.stages
   const idx = stages.indexOf(piece.stage)
-  if (idx < stages.length - 1) {
+  if (idx >= 0 && idx < stages.length - 1) {
     const next = stages[idx + 1]
+    const isLast = idx + 1 === stages.length - 1
     return savePiece({
       ...piece,
       stage: next,
-      completed_at: next === 'complete' ? new Date().toISOString() : piece.completed_at,
+      completed_at: isLast ? new Date().toISOString() : piece.completed_at,
     })
   }
   return piece
