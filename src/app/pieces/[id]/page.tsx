@@ -50,7 +50,7 @@ export default function PieceDetailPage() {
   const nextStageObj = !isComplete && currentStageIdx !== -1 ? stages[currentStageIdx + 1] : null
 
   function handleAdvance() {
-    if (!piece || !nextStage) return
+    if (!piece || !nextStageObj) return
     setConfirmAdvanceOpen(true)
   }
 
