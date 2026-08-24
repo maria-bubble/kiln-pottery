@@ -29,12 +29,14 @@ export default function PieceDetailPage() {
   const { id } = useParams<{ id: string }>()
   const router = useRouter()
   const [piece, setPiece] = useState<Piece | null>(null)
+  const [stages, setStages] = useState<Stage[]>([])
   const [confirmAdvanceOpen, setConfirmAdvanceOpen] = useState(false)
 
   useEffect(() => {
     const p = getPiece(id)
     if (!p) router.push('/')
     else setPiece(p)
+    setStages(getStages())
   }, [id, router])
 
   if (!piece) return null
