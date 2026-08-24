@@ -1,7 +1,17 @@
 'use client'
 
-import { Piece, UserPreferences, SurfaceLayer, PieceStage } from '@/types'
+import { Piece, UserPreferences, SurfaceLayer, Stage } from '@/types'
 import { generateId } from './utils'
+
+export const DEFAULT_STAGES: Stage[] = [
+  { id: 'not_started', label: 'Not started' },
+  { id: 'drying', label: 'Drying' },
+  { id: 'bisque_firing', label: 'Bisque Firing' },
+  { id: 'bisque_fired', label: 'Bisque Fired' },
+  { id: 'glaze_firing', label: 'Glaze Firing' },
+  { id: 'glaze_fired', label: 'Glaze Fired' },
+  { id: 'done', label: 'Done' },
+]
 
 const PIECES_KEY = 'pottery_pieces'
 const PREFS_KEY = 'pottery_prefs'
