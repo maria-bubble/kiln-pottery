@@ -1,10 +1,9 @@
-export type PieceStage =
-  | 'forming'
-  | 'drying'
-  | 'bisque_fired'
-  | 'glazing'
-  | 'glaze_fired'
-  | 'complete'
+export type PieceStage = string
+
+export type Stage = {
+  id: string
+  label: string
+}
 
 export type SurfaceLayerType =
   | 'glaze'
