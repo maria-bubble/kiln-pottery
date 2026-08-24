@@ -3,6 +3,15 @@
 import { Piece, UserPreferences, SurfaceLayer, Stage, PieceType } from '@/types'
 import { generateId } from './utils'
 
+export const DEFAULT_PIECE_TYPES: PieceType[] = [
+  { id: 'cup', label: 'Cup' },
+  { id: 'bowl', label: 'Bowl' },
+  { id: 'plate', label: 'Plate' },
+  { id: 'sculpture', label: 'Sculpture' },
+  { id: 'vase', label: 'Vase' },
+  { id: 'container', label: 'Container' },
+]
+
 export const DEFAULT_STAGES: Stage[] = [
   { id: 'not_started', label: 'Not started' },
   { id: 'drying', label: 'Drying' },
