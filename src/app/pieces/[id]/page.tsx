@@ -282,12 +282,12 @@ export default function PieceDetailPage() {
       <Dialog open={confirmAdvanceOpen} onOpenChange={setConfirmAdvanceOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Advance to {nextStage ? STAGE_LABELS[nextStage] : ''}?</DialogTitle>
+            <DialogTitle>Advance to {nextStageObj ? nextStageObj.label : ''}?</DialogTitle>
           </DialogHeader>
           <p className="text-sm text-stone-600 mb-6">
             This will move <strong>{piece?.title}</strong> from{' '}
-            <strong>{STAGE_LABELS[piece?.stage ?? 'wedging']}</strong> to{' '}
-            <strong>{nextStage ? STAGE_LABELS[nextStage] : ''}</strong>. This cannot be undone.
+            <strong>{stageLabel(piece?.stage ?? '')}</strong> to{' '}
+            <strong>{nextStageObj ? nextStageObj.label : ''}</strong>. This cannot be undone.
           </p>
           <div className="flex justify-end gap-3">
             <DialogClose asChild>
