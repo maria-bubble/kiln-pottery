@@ -13,6 +13,7 @@ import { ChevronUp, ChevronDown, Trash2, Plus } from 'lucide-react'
 export default function PreferencesPage() {
   const [prefs, setPrefs] = useState<UserPreferences | null>(null)
   const [saved, setSaved] = useState(false)
+  const [newStageName, setNewStageName] = useState('')
 
   useEffect(() => {
     setPrefs(getPreferences())
