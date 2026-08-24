@@ -85,13 +85,27 @@ export function advanceStage(piece: Piece): Piece {
 }
 
 export function getPreferences(): UserPreferences {
-  return load<UserPreferences>(PREFS_KEY, {
+  const defaults: UserPreferences = {
     id: generateId(),
     user_id: 'local',
     favorite_clay_bodies: [],
     favorite_surface_products: [],
     default_surface_layers: [],
-  })
+    stages: DEFAULT_STAGES,
+    default_stage: DEFAULT_STAGE,
+  }
+  const prefs = load<UserPreferences>(PREFS_KEY, defaults)
+  // Migration: existing stored prefs that predate the stages feature get the defaults injected.
+  if (!prefs.stages || prefs.stages.length === 0) {
+    const migrated: UserPreferences = {
+      ...prefs,
+      stages: DEFAULT_STAGES,
+      default_stage: prefs.default_stage || DEFAULT_STAGE,
+    }
+    save(PREFS_KEY, migrated)
+    return migrated
+  }
+  return prefs
 }
 
 export function savePreferences(prefs: UserPreferences) {
