@@ -65,18 +65,18 @@ export default function HomePage() {
         >
           All ({pieces.length})
         </button>
-        {STAGE_ORDER.map((s) => (
+        {stages.map((s) => (
           <button
-            key={s}
-            onClick={() => setFilterStage(s)}
+            key={s.id}
+            onClick={() => setFilterStage(s.id)}
             className={cn(
               'px-3 py-1 rounded-full text-sm font-medium transition-colors',
-              filterStage === s
+              filterStage === s.id
                 ? 'bg-stone-800 text-white'
                 : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
             )}
           >
-            {STAGE_LABELS[s]} ({stageCounts[s] || 0})
+            {s.label} ({stageCounts[s.id] || 0})
           </button>
         ))}
       </div>
