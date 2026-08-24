@@ -105,14 +105,14 @@ export default function PieceDetailPage() {
 
       <StageProgress stage={piece.stage} />
 
-      {!isComplete && nextStage && (
+      {!isComplete && nextStageObj && (
         <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 flex items-center justify-between">
           <div>
             <p className="text-sm font-medium text-amber-900">Ready to advance?</p>
-            <p className="text-xs text-amber-700 mt-0.5">Move this piece to <strong>{STAGE_LABELS[nextStage]}</strong></p>
+            <p className="text-xs text-amber-700 mt-0.5">Move this piece to <strong>{nextStageObj.label}</strong></p>
           </div>
           <Button variant="clay" size="sm" onClick={handleAdvance}>
-            Mark as {STAGE_LABELS[nextStage]}
+            Mark as {nextStageObj.label}
             <ChevronRight className="h-4 w-4" />
           </Button>
         </div>
