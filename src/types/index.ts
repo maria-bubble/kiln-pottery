@@ -94,6 +94,8 @@ export type UserPreferences = {
   favorite_clay_bodies: ClayBody[]
   favorite_surface_products: FavoriteSurfaceProduct[]
   default_surface_layers: SurfaceLayer[]
+  stages: Stage[]
+  default_stage?: string
 }
 
 export type FavoriteSurfaceProduct = {
