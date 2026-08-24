@@ -73,6 +73,7 @@ export function createNewPiece(overrides: Partial<Piece> = {}): Piece {
     user_id: 'local',
     title: 'Untitled Piece',
     stage: prefs.default_stage ?? prefs.stages[0]?.id ?? 'not_started',
+    piece_type: prefs.default_piece_type,
     forming_method: prefs.default_forming_method,
     clay_body: prefs.default_clay_body,
     firing_type: prefs.default_firing_type,
