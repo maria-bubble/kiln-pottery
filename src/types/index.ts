@@ -1,10 +1,9 @@
-export type PieceStage =
-  | 'forming'
-  | 'drying'
-  | 'bisque_fired'
-  | 'glazing'
-  | 'glaze_fired'
-  | 'complete'
+export type PieceStage = string
+
+export type Stage = {
+  id: string
+  label: string
+}
 
 export type SurfaceLayerType =
   | 'glaze'
@@ -95,6 +94,8 @@ export type UserPreferences = {
   favorite_clay_bodies: ClayBody[]
   favorite_surface_products: FavoriteSurfaceProduct[]
   default_surface_layers: SurfaceLayer[]
+  stages: Stage[]
+  default_stage?: string
 }
 
 export type FavoriteSurfaceProduct = {
@@ -106,7 +107,7 @@ export type FavoriteSurfaceProduct = {
   notes?: string
 }
 
-export const STAGE_LABELS: Record<PieceStage, string> = {
+export const STAGE_LABELS: Record<string, string> = {
   forming: 'Forming',
   drying: 'Drying',
   bisque_fired: 'Bisque Fired',
@@ -115,7 +116,7 @@ export const STAGE_LABELS: Record<PieceStage, string> = {
   complete: 'Complete',
 }
 
-export const STAGE_ORDER: PieceStage[] = [
+export const STAGE_ORDER: string[] = [
   'forming',
   'drying',
   'bisque_fired',
@@ -156,7 +157,7 @@ export const FIRING_TYPE_LABELS: Record<FiringType, string> = {
   pit: 'Pit Fired',
 }
 
-export const STAGE_COLORS: Record<PieceStage, string> = {
+export const STAGE_COLORS: Record<string, string> = {
   forming: 'bg-amber-100 text-amber-800',
   drying: 'bg-yellow-100 text-yellow-800',
   bisque_fired: 'bg-orange-100 text-orange-800',

@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { Piece, STAGE_LABELS, STAGE_ORDER, FORMING_METHOD_LABELS, FIRING_TYPE_LABELS, LAYER_TYPE_LABELS, SurfaceLayer } from '@/types'
-import { getPiece, advanceStage, deletePiece, savePiece } from '@/lib/store'
+import { Piece, Stage, FORMING_METHOD_LABELS, FIRING_TYPE_LABELS, LAYER_TYPE_LABELS, SurfaceLayer } from '@/types'
+import { getPiece, advanceStage, deletePiece, savePiece, getStages } from '@/lib/store'
 import { StageProgress } from '@/components/StageProgress'
 import { SurfaceLayerEditor } from '@/components/SurfaceLayerEditor'
 import { Button } from '@/components/ui/button'
@@ -29,22 +29,28 @@ export default function PieceDetailPage() {
   const { id } = useParams<{ id: string }>()
   const router = useRouter()
   const [piece, setPiece] = useState<Piece | null>(null)
+  const [stages, setStages] = useState<Stage[]>([])
   const [confirmAdvanceOpen, setConfirmAdvanceOpen] = useState(false)
 
   useEffect(() => {
     const p = getPiece(id)
     if (!p) router.push('/')
     else setPiece(p)
+    setStages(getStages())
   }, [id, router])
 
   if (!piece) return null
 
-  const currentStageIdx = STAGE_ORDER.indexOf(piece.stage)
-  const isComplete = piece.stage === 'complete'
-  const nextStage = !isComplete ? STAGE_ORDER[currentStageIdx + 1] : null
+  function stageLabel(id: string): string {
+    return stages.find((s) => s.id === id)?.label ?? id
+  }
+
+  const currentStageIdx = stages.findIndex((s) => s.id === piece!.stage)
+  const isComplete = piece.stage === stages[stages.length - 1]?.id
+  const nextStageObj = !isComplete && currentStageIdx !== -1 ? stages[currentStageIdx + 1] : null
 
   function handleAdvance() {
-    if (!piece || !nextStage) return
+    if (!piece || !nextStageObj) return
     setConfirmAdvanceOpen(true)
   }
 
@@ -67,7 +73,7 @@ export default function PieceDetailPage() {
     setPiece(updated)
   }
 
-  const isGlazing = piece.stage === 'glazing'
+  const isGlazing = piece.stage === 'glazing' || piece.stage === 'glaze_firing'
 
   return (
     <div className="max-w-2xl mx-auto space-y-8">
@@ -99,14 +105,14 @@ export default function PieceDetailPage() {
 
       <StageProgress stage={piece.stage} />
 
-      {!isComplete && nextStage && (
+      {!isComplete && nextStageObj && (
         <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 flex items-center justify-between">
           <div>
             <p className="text-sm font-medium text-amber-900">Ready to advance?</p>
-            <p className="text-xs text-amber-700 mt-0.5">Move this piece to <strong>{STAGE_LABELS[nextStage]}</strong></p>
+            <p className="text-xs text-amber-700 mt-0.5">Move this piece to <strong>{nextStageObj.label}</strong></p>
           </div>
           <Button variant="clay" size="sm" onClick={handleAdvance}>
-            Mark as {STAGE_LABELS[nextStage]}
+            Mark as {nextStageObj.label}
             <ChevronRight className="h-4 w-4" />
           </Button>
         </div>
@@ -276,12 +282,12 @@ export default function PieceDetailPage() {
       <Dialog open={confirmAdvanceOpen} onOpenChange={setConfirmAdvanceOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Advance to {nextStage ? STAGE_LABELS[nextStage] : ''}?</DialogTitle>
+            <DialogTitle>Advance to {nextStageObj ? nextStageObj.label : ''}?</DialogTitle>
           </DialogHeader>
           <p className="text-sm text-stone-600 mb-6">
             This will move <strong>{piece?.title}</strong> from{' '}
-            <strong>{STAGE_LABELS[piece?.stage ?? 'wedging']}</strong> to{' '}
-            <strong>{nextStage ? STAGE_LABELS[nextStage] : ''}</strong>. This cannot be undone.
+            <strong>{stageLabel(piece?.stage ?? '')}</strong> to{' '}
+            <strong>{nextStageObj ? nextStageObj.label : ''}</strong>. This cannot be undone.
           </p>
           <div className="flex justify-end gap-3">
             <DialogClose asChild>

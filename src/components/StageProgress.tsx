@@ -1,37 +1,65 @@
 'use client'
 
-import { PieceStage, STAGE_LABELS, STAGE_ORDER } from '@/types'
+import { getStages } from '@/lib/store'
 import { cn } from '@/lib/utils'
 import { Check } from 'lucide-react'
 
+// Fixed palette cycled by position index so colors stay consistent
+// regardless of what the user names their stages.
+const STAGE_PALETTE = [
+  'bg-gray-400',
+  'bg-yellow-400',
+  'bg-orange-400',
+  'bg-amber-500',
+  'bg-red-500',
+  'bg-blue-500',
+  'bg-green-500',
+]
+
+// Compact-badge palette: softer tones that read well on white backgrounds
+const BADGE_PALETTE = [
+  'bg-gray-100 text-gray-800',
+  'bg-yellow-100 text-yellow-800',
+  'bg-orange-100 text-orange-800',
+  'bg-amber-100 text-amber-800',
+  'bg-red-100 text-red-800',
+  'bg-blue-100 text-blue-800',
+  'bg-green-100 text-green-800',
+]
+
 interface StageProgressProps {
-  stage: PieceStage
+  stage: string
   compact?: boolean
 }
 
 export function StageProgress({ stage, compact }: StageProgressProps) {
-  const currentIdx = STAGE_ORDER.indexOf(stage)
+  const stages = getStages()
+  const currentIdx = stages.findIndex((s) => s.id === stage)
+  // If stage id not found (legacy piece), treat as position 0 with raw id as label
+  const resolvedIdx = currentIdx === -1 ? 0 : currentIdx
+  const currentLabel = currentIdx === -1 ? stage : stages[currentIdx].label
 
   if (compact) {
+    const badgeColor = BADGE_PALETTE[resolvedIdx % BADGE_PALETTE.length]
     return (
       <span
         className={cn(
           'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold',
-          stageColor(stage)
+          badgeColor
         )}
       >
-        {STAGE_LABELS[stage]}
+        {currentLabel}
       </span>
     )
   }
 
   return (
     <div className="flex items-center gap-0">
-      {STAGE_ORDER.map((s, i) => {
-        const done = i < currentIdx
-        const active = i === currentIdx
+      {stages.map((s, i) => {
+        const done = i < resolvedIdx
+        const active = i === resolvedIdx
         return (
-          <div key={s} className="flex items-center">
+          <div key={s.id} className="flex items-center">
             <div className="flex flex-col items-center gap-1">
               <div
                 className={cn(
@@ -49,14 +77,14 @@ export function StageProgress({ stage, compact }: StageProgressProps) {
                   active ? 'text-amber-700 font-semibold' : 'text-stone-400'
                 )}
               >
-                {STAGE_LABELS[s]}
+                {s.label}
               </span>
             </div>
-            {i < STAGE_ORDER.length - 1 && (
+            {i < stages.length - 1 && (
               <div
                 className={cn(
                   'mb-4 h-0.5 w-6',
-                  i < currentIdx ? 'bg-amber-700' : 'bg-stone-200'
+                  i < resolvedIdx ? 'bg-amber-700' : 'bg-stone-200'
                 )}
               />
             )}
@@ -65,16 +93,4 @@ export function StageProgress({ stage, compact }: StageProgressProps) {
       })}
     </div>
   )
-}
-
-function stageColor(stage: PieceStage) {
-  const colors: Record<PieceStage, string> = {
-    forming: 'bg-amber-100 text-amber-800',
-    drying: 'bg-yellow-100 text-yellow-800',
-    bisque_fired: 'bg-orange-100 text-orange-800',
-    glazing: 'bg-blue-100 text-blue-800',
-    glaze_fired: 'bg-purple-100 text-purple-800',
-    complete: 'bg-green-100 text-green-800',
-  }
-  return colors[stage]
 }

@@ -1,7 +1,16 @@
 'use client'
 
-import { Piece, UserPreferences, SurfaceLayer, PieceStage } from '@/types'
+import { Piece, UserPreferences, SurfaceLayer, Stage } from '@/types'
 import { generateId } from './utils'
+
+export const DEFAULT_STAGES: Stage[] = [
+  { id: 'not_started', label: 'Not started' },
+  { id: 'drying', label: 'Drying' },
+  { id: 'bisque_firing', label: 'Bisque Firing' },
+  { id: 'bisque_fired', label: 'Bisque Fired' },
+  { id: 'glaze_firing', label: 'Glaze Firing' },
+  { id: 'glaze_fired', label: 'Glaze Fired' },
+]
 
 const PIECES_KEY = 'pottery_pieces'
 const PREFS_KEY = 'pottery_prefs'
@@ -54,7 +63,7 @@ export function createNewPiece(overrides: Partial<Piece> = {}): Piece {
     id: generateId(),
     user_id: 'local',
     title: 'Untitled Piece',
-    stage: 'forming',
+    stage: prefs.default_stage ?? prefs.stages[0]?.id ?? 'not_started',
     forming_method: prefs.default_forming_method,
     clay_body: prefs.default_clay_body,
     firing_type: prefs.default_firing_type,
@@ -69,21 +78,15 @@ export function createNewPiece(overrides: Partial<Piece> = {}): Piece {
 }
 
 export function advanceStage(piece: Piece): Piece {
-  const stages: PieceStage[] = [
-    'forming',
-    'drying',
-    'bisque_fired',
-    'glazing',
-    'glaze_fired',
-    'complete',
-  ]
-  const idx = stages.indexOf(piece.stage)
-  if (idx < stages.length - 1) {
-    const next = stages[idx + 1]
+  const stageIds = getPreferences().stages.map((s) => s.id)
+  const idx = stageIds.indexOf(piece.stage)
+  if (idx < stageIds.length - 1) {
+    const next = stageIds[idx + 1]
+    const isLast = next === stageIds[stageIds.length - 1]
     return savePiece({
       ...piece,
       stage: next,
-      completed_at: next === 'complete' ? new Date().toISOString() : piece.completed_at,
+      completed_at: isLast ? new Date().toISOString() : piece.completed_at,
     })
   }
   return piece
@@ -96,7 +99,13 @@ export function getPreferences(): UserPreferences {
     favorite_clay_bodies: [],
     favorite_surface_products: [],
     default_surface_layers: [],
+    stages: DEFAULT_STAGES,
+    default_stage: 'not_started',
   })
+}
+
+export function getStages(): Stage[] {
+  return getPreferences().stages
 }
 
 export function savePreferences(prefs: UserPreferences) {
