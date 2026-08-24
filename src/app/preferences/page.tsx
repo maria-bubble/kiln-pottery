@@ -13,6 +13,7 @@ export default function PreferencesPage() {
   const [prefs, setPrefs] = useState<UserPreferences | null>(null)
   const [saved, setSaved] = useState(false)
   const [newStageLabel, setNewStageLabel] = useState('')
+  const [newPieceTypeLabel, setNewPieceTypeLabel] = useState('')
 
   useEffect(() => {
     const loaded = getPreferences()
@@ -22,6 +23,11 @@ export default function PreferencesPage() {
     }
     if (!loaded.default_stage) {
       loaded.default_stage = loaded.stages[0]?.id
+    }
+    // Back-fill piece_types for existing users whose stored prefs pre-date this field
+    if (!loaded.piece_types || loaded.piece_types.length === 0) {
+      loaded.piece_types = DEFAULT_PIECE_TYPES
+      loaded.default_piece_type = undefined
     }
     setPrefs(loaded)
   }, [])
