@@ -41,9 +41,13 @@ export default function PieceDetailPage() {
 
   if (!piece) return null
 
-  const currentStageIdx = STAGE_ORDER.indexOf(piece.stage)
-  const isComplete = piece.stage === 'complete'
-  const nextStage = !isComplete ? STAGE_ORDER[currentStageIdx + 1] : null
+  function stageLabel(id: string): string {
+    return stages.find((s) => s.id === id)?.label ?? id
+  }
+
+  const currentStageIdx = stages.findIndex((s) => s.id === piece!.stage)
+  const isComplete = piece.stage === stages[stages.length - 1]?.id
+  const nextStageObj = !isComplete && currentStageIdx !== -1 ? stages[currentStageIdx + 1] : null
 
   function handleAdvance() {
     if (!piece || !nextStage) return
