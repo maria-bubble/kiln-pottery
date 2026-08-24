@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Piece, PieceStage, STAGE_LABELS, STAGE_ORDER } from '@/types'
-import { getPieces } from '@/lib/store'
+import { Piece, Stage } from '@/types'
+import { getPieces, getStages } from '@/lib/store'
 import { PieceCard } from '@/components/PieceCard'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
