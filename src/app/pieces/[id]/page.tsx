@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { Piece, STAGE_LABELS, STAGE_ORDER, FORMING_METHOD_LABELS, FIRING_TYPE_LABELS, LAYER_TYPE_LABELS, SurfaceLayer } from '@/types'
-import { getPiece, advanceStage, deletePiece, savePiece } from '@/lib/store'
+import { Piece, Stage, FORMING_METHOD_LABELS, FIRING_TYPE_LABELS, LAYER_TYPE_LABELS, SurfaceLayer } from '@/types'
+import { getPiece, advanceStage, deletePiece, savePiece, getStages } from '@/lib/store'
 import { StageProgress } from '@/components/StageProgress'
 import { SurfaceLayerEditor } from '@/components/SurfaceLayerEditor'
 import { Button } from '@/components/ui/button'
