@@ -10,7 +10,6 @@ export const DEFAULT_STAGES: Stage[] = [
   { id: 'bisque_fired', label: 'Bisque Fired' },
   { id: 'glaze_firing', label: 'Glaze Firing' },
   { id: 'glaze_fired', label: 'Glaze Fired' },
-  { id: 'done', label: 'Done' },
 ]
 
 const PIECES_KEY = 'pottery_pieces'
