@@ -102,23 +102,18 @@ export type FavoriteSurfaceProduct = {
   notes?: string
 }
 
-export const STAGE_LABELS: Record<PieceStage, string> = {
-  forming: 'Forming',
-  drying: 'Drying',
-  bisque_fired: 'Bisque Fired',
-  glazing: 'Glazing',
-  glaze_fired: 'Glaze Fired',
-  complete: 'Complete',
-}
-
-export const STAGE_ORDER: PieceStage[] = [
-  'forming',
-  'drying',
-  'bisque_fired',
-  'glazing',
-  'glaze_fired',
-  'complete',
+// Default stages used when initializing a new user's preferences.
+export const DEFAULT_STAGES: string[] = [
+  'Not started',
+  'Drying',
+  'Bisque Firing',
+  'Bisque Fired',
+  'Glaze Firing',
+  'Glaze Fired',
+  'Done',
 ]
+
+export const DEFAULT_STAGE = 'Not started'
 
 export const LAYER_TYPE_LABELS: Record<SurfaceLayerType, string> = {
   glaze: 'Glaze',
