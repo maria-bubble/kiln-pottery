@@ -1,6 +1,6 @@
 'use client'
 
-import { Piece, UserPreferences, SurfaceLayer, PieceStage } from '@/types'
+import { Piece, UserPreferences, SurfaceLayer, DEFAULT_STAGES, DEFAULT_STAGE } from '@/types'
 import { generateId } from './utils'
 
 const PIECES_KEY = 'pottery_pieces'
