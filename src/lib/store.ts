@@ -106,7 +106,13 @@ export function getPreferences(): UserPreferences {
     favorite_clay_bodies: [],
     favorite_surface_products: [],
     default_surface_layers: [],
+    stages: DEFAULT_STAGES,
+    default_stage: 'not_started',
   })
+}
+
+export function getStages(): Stage[] {
+  return getPreferences().stages
 }
 
 export function savePreferences(prefs: UserPreferences) {
