@@ -102,7 +102,7 @@ export function advanceStage(piece: Piece): Piece {
 }
 
 export function getPreferences(): UserPreferences {
-  return load<UserPreferences>(PREFS_KEY, {
+  const prefs = load<UserPreferences>(PREFS_KEY, {
     id: generateId(),
     user_id: 'local',
     favorite_clay_bodies: [],
@@ -110,7 +110,14 @@ export function getPreferences(): UserPreferences {
     default_surface_layers: [],
     stages: DEFAULT_STAGES,
     default_stage: 'not_started',
+    piece_types: DEFAULT_PIECE_TYPES,
+    default_piece_type: undefined,
   })
+  if (!prefs.piece_types || prefs.piece_types.length === 0) {
+    prefs.piece_types = DEFAULT_PIECE_TYPES
+    prefs.default_piece_type = undefined
+  }
+  return prefs
 }
 
 export function getStages(): Stage[] {
