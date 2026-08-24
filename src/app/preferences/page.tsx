@@ -74,6 +74,41 @@ export default function PreferencesPage() {
     setNewStageLabel('')
   }
 
+  // ── Piece type helpers ────────────────────────────────────────────────────
+
+  function updatePieceTypeLabel(idx: number, label: string) {
+    const piece_types = prefs!.piece_types.map((t, i) => i === idx ? { ...t, label } : t)
+    update('piece_types', piece_types)
+  }
+
+  function movePieceType(idx: number, direction: -1 | 1) {
+    const piece_types = [...prefs!.piece_types]
+    const target = idx + direction
+    if (target < 0 || target >= piece_types.length) return
+    ;[piece_types[idx], piece_types[target]] = [piece_types[target], piece_types[idx]]
+    update('piece_types', piece_types)
+  }
+
+  function deletePieceType(idx: number) {
+    const piece_types = prefs!.piece_types.filter((_, i) => i !== idx)
+    const deletedId = prefs!.piece_types[idx].id
+    const newDefaultPieceType =
+      prefs!.default_piece_type === deletedId ? undefined : prefs!.default_piece_type
+    setPrefs((prev) =>
+      prev ? { ...prev, piece_types, default_piece_type: newDefaultPieceType } : prev
+    )
+    setSaved(false)
+  }
+
+  function addPieceType() {
+    const label = newPieceTypeLabel.trim()
+    if (!label) return
+    const id = `piece_type_${Date.now()}`
+    const piece_types = [...prefs!.piece_types, { id, label }]
+    update('piece_types', piece_types)
+    setNewPieceTypeLabel('')
+  }
+
   // ── Save ──────────────────────────────────────────────────────────────────
 
   function handleSave() {
