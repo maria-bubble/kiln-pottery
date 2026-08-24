@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Piece, PieceStage, STAGE_LABELS, STAGE_ORDER } from '@/types'
-import { getPieces } from '@/lib/store'
+import { Piece, UserPreferences } from '@/types'
+import { getPieces, getPreferences } from '@/lib/store'
 import { PieceCard } from '@/components/PieceCard'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -12,12 +12,16 @@ import { cn } from '@/lib/utils'
 
 export default function HomePage() {
   const [pieces, setPieces] = useState<Piece[]>([])
+  const [prefs, setPrefs] = useState<UserPreferences | null>(null)
   const [search, setSearch] = useState('')
-  const [filterStage, setFilterStage] = useState<PieceStage | 'all'>('all')
+  const [filterStage, setFilterStage] = useState<string | 'all'>('all')
 
   useEffect(() => {
     setPieces(getPieces())
+    setPrefs(getPreferences())
   }, [])
+
+  const stages = prefs?.stages ?? []
 
   const filtered = pieces.filter((p) => {
     const matchStage = filterStage === 'all' || p.stage === filterStage
@@ -29,9 +33,9 @@ export default function HomePage() {
     return matchStage && matchSearch
   })
 
-  const stageCounts = STAGE_ORDER.reduce(
+  const stageCounts = stages.reduce(
     (acc, s) => ({ ...acc, [s]: pieces.filter((p) => p.stage === s).length }),
-    {} as Record<PieceStage, number>
+    {} as Record<string, number>
   )
 
   return (
@@ -63,7 +67,7 @@ export default function HomePage() {
         >
           All ({pieces.length})
         </button>
-        {STAGE_ORDER.map((s) => (
+        {stages.map((s) => (
           <button
             key={s}
             onClick={() => setFilterStage(s)}
@@ -74,7 +78,7 @@ export default function HomePage() {
                 : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
             )}
           >
-            {STAGE_LABELS[s]} ({stageCounts[s] || 0})
+            {s} ({stageCounts[s] || 0})
           </button>
         ))}
       </div>
