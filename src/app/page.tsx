@@ -31,9 +31,9 @@ export default function HomePage() {
     return matchStage && matchSearch
   })
 
-  const stageCounts = STAGE_ORDER.reduce(
-    (acc, s) => ({ ...acc, [s]: pieces.filter((p) => p.stage === s).length }),
-    {} as Record<PieceStage, number>
+  const stageCounts = stages.reduce(
+    (acc, s) => ({ ...acc, [s.id]: pieces.filter((p) => p.stage === s.id).length }),
+    {} as Record<string, number>
   )
 
   return (
