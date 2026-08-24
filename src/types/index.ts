@@ -102,6 +102,8 @@ export type UserPreferences = {
   default_surface_layers: SurfaceLayer[]
   stages: Stage[]
   default_stage?: string
+  piece_types: PieceType[]
+  default_piece_type?: string
 }
 
 export type FavoriteSurfaceProduct = {
