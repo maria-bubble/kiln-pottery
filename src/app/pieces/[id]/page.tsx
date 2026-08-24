@@ -73,7 +73,7 @@ export default function PieceDetailPage() {
     setPiece(updated)
   }
 
-  const isGlazing = piece.stage === 'glazing'
+  const isGlazing = piece.stage === 'glaze_firing'
 
   return (
     <div className="max-w-2xl mx-auto space-y-8">
