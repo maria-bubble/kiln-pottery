@@ -12,11 +12,13 @@ import { cn } from '@/lib/utils'
 
 export default function HomePage() {
   const [pieces, setPieces] = useState<Piece[]>([])
+  const [stages, setStages] = useState<Stage[]>([])
   const [search, setSearch] = useState('')
-  const [filterStage, setFilterStage] = useState<PieceStage | 'all'>('all')
+  const [filterStage, setFilterStage] = useState<string>('all')
 
   useEffect(() => {
     setPieces(getPieces())
+    setStages(getStages())
   }, [])
 
   const filtered = pieces.filter((p) => {
