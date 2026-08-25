@@ -1,6 +1,6 @@
 'use client'
 
-import { Piece, UserPreferences, SurfaceLayer, Stage } from '@/types'
+import { Piece, UserPreferences, SurfaceLayer, Stage, PieceType } from '@/types'
 import { generateId } from './utils'
 
 export const DEFAULT_STAGES: Stage[] = [
