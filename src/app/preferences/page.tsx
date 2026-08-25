@@ -187,6 +187,89 @@ export default function PreferencesPage() {
 
       <section className="space-y-4 bg-white rounded-xl border border-stone-200 p-6">
         <div>
+          <h2 className="text-base font-semibold text-stone-800">Piece Types</h2>
+          <p className="text-xs text-stone-500 mt-1">
+            Manage the types of pieces you make. Set a default to pre-fill new pieces.
+          </p>
+        </div>
+
+        <div className="space-y-2">
+          {prefs.piece_types.map((pt: PieceType, idx: number) => (
+            <div key={pt.id} className="flex items-center gap-2">
+              <Input
+                value={pt.label}
+                onChange={(e) => updatePieceTypeLabel(idx, e.target.value)}
+                className="flex-1"
+              />
+              <button
+                type="button"
+                disabled={idx === 0}
+                onClick={() => movePieceType(idx, -1)}
+                className="px-2 py-1 text-xs rounded border border-stone-200 text-stone-500 hover:bg-stone-50 disabled:opacity-30 disabled:cursor-not-allowed"
+                aria-label="Move up"
+              >
+                ↑
+              </button>
+              <button
+                type="button"
+                disabled={idx === prefs.piece_types.length - 1}
+                onClick={() => movePieceType(idx, 1)}
+                className="px-2 py-1 text-xs rounded border border-stone-200 text-stone-500 hover:bg-stone-50 disabled:opacity-30 disabled:cursor-not-allowed"
+                aria-label="Move down"
+              >
+                ↓
+              </button>
+              <button
+                type="button"
+                disabled={prefs.piece_types.length <= 1}
+                onClick={() => deletePieceType(idx)}
+                className="px-2 py-1 text-xs rounded border border-stone-200 text-red-400 hover:bg-red-50 disabled:opacity-30 disabled:cursor-not-allowed"
+                aria-label="Delete piece type"
+              >
+                ✕
+              </button>
+            </div>
+          ))}
+        </div>
+
+        <div className="flex gap-2">
+          <Input
+            value={newPieceTypeLabel}
+            onChange={(e) => setNewPieceTypeLabel(e.target.value)}
+            placeholder="New type name..."
+            className="flex-1"
+            onKeyDown={(e) => { if (e.key === 'Enter') addPieceType() }}
+          />
+          <Button
+            variant="outline"
+            onClick={addPieceType}
+            disabled={!newPieceTypeLabel.trim()}
+          >
+            Add type
+          </Button>
+        </div>
+
+        <div className="space-y-2">
+          <Label>Default piece type</Label>
+          <Select
+            value={prefs.default_piece_type || ''}
+            onValueChange={(v) => update('default_piece_type', v || undefined)}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select..." />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">None</SelectItem>
+              {prefs.piece_types.map((pt: PieceType) => (
+                <SelectItem key={pt.id} value={pt.id}>{pt.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </section>
+
+      <section className="space-y-4 bg-white rounded-xl border border-stone-200 p-6">
+        <div>
           <h2 className="text-base font-semibold text-stone-800">Stages</h2>
           <p className="text-xs text-stone-500 mt-1">
             Define the workflow stages for your pieces. Drag to reorder, or use the arrows.
