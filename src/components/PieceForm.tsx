@@ -68,6 +68,23 @@ export function PieceForm({ initialPiece, isNew }: PieceFormProps) {
         </div>
 
         <div className="space-y-2">
+          <Label>Piece Type</Label>
+          <Select
+            value={piece.piece_type || ''}
+            onValueChange={(v) => update('piece_type', v || undefined)}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select type..." />
+            </SelectTrigger>
+            <SelectContent>
+              {prefs.piece_types.map((pt: PieceType) => (
+                <SelectItem key={pt.id} value={pt.id}>{pt.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="space-y-2">
           <Label>Forming Method</Label>
           <Select
             value={piece.forming_method || ''}
