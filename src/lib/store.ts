@@ -12,6 +12,15 @@ export const DEFAULT_STAGES: Stage[] = [
   { id: 'glaze_fired', label: 'Glaze Fired' },
 ]
 
+export const DEFAULT_PIECE_TYPES: PieceType[] = [
+  { id: 'cup',       label: 'Cup' },
+  { id: 'bowl',      label: 'Bowl' },
+  { id: 'plate',     label: 'Plate' },
+  { id: 'sculpture', label: 'Sculpture' },
+  { id: 'vase',      label: 'Vase' },
+  { id: 'container', label: 'Container' },
+]
+
 const PIECES_KEY = 'pottery_pieces'
 const PREFS_KEY = 'pottery_prefs'
 
