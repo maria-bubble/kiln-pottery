@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { UserPreferences, FormingMethod, FiringType, Stage, FORMING_METHOD_LABELS, FIRING_TYPE_LABELS } from '@/types'
-import { getPreferences, savePreferences, DEFAULT_STAGES } from '@/lib/store'
+import { UserPreferences, FormingMethod, FiringType, Stage, PieceType, FORMING_METHOD_LABELS, FIRING_TYPE_LABELS } from '@/types'
+import { getPreferences, savePreferences, DEFAULT_STAGES, DEFAULT_PIECE_TYPES } from '@/lib/store'
 import { SurfaceLayerEditor } from '@/components/SurfaceLayerEditor'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -13,6 +13,7 @@ export default function PreferencesPage() {
   const [prefs, setPrefs] = useState<UserPreferences | null>(null)
   const [saved, setSaved] = useState(false)
   const [newStageLabel, setNewStageLabel] = useState('')
+  const [newPieceTypeLabel, setNewPieceTypeLabel] = useState('')
 
   useEffect(() => {
     const loaded = getPreferences()
@@ -22,6 +23,9 @@ export default function PreferencesPage() {
     }
     if (!loaded.default_stage) {
       loaded.default_stage = loaded.stages[0]?.id
+    }
+    if (!loaded.piece_types || loaded.piece_types.length === 0) {
+      loaded.piece_types = DEFAULT_PIECE_TYPES
     }
     setPrefs(loaded)
   }, [])
@@ -66,6 +70,41 @@ export default function PreferencesPage() {
     const stages = [...prefs!.stages, { id, label }]
     update('stages', stages)
     setNewStageLabel('')
+  }
+
+  // ── Piece Type helpers ────────────────────────────────────────────────────
+
+  function updatePieceTypeLabel(idx: number, label: string) {
+    const piece_types = prefs!.piece_types.map((pt, i) => i === idx ? { ...pt, label } : pt)
+    update('piece_types', piece_types)
+  }
+
+  function movePieceType(idx: number, direction: -1 | 1) {
+    const piece_types = [...prefs!.piece_types]
+    const target = idx + direction
+    if (target < 0 || target >= piece_types.length) return
+    ;[piece_types[idx], piece_types[target]] = [piece_types[target], piece_types[idx]]
+    update('piece_types', piece_types)
+  }
+
+  function deletePieceType(idx: number) {
+    const piece_types = prefs!.piece_types.filter((_, i) => i !== idx)
+    const deletedId = prefs!.piece_types[idx].id
+    const newDefaultPieceType =
+      prefs!.default_piece_type === deletedId ? piece_types[0]?.id : prefs!.default_piece_type
+    setPrefs((prev) =>
+      prev ? { ...prev, piece_types, default_piece_type: newDefaultPieceType } : prev
+    )
+    setSaved(false)
+  }
+
+  function addPieceType() {
+    const label = newPieceTypeLabel.trim()
+    if (!label) return
+    const id = `piece_type_${Date.now()}`
+    const piece_types = [...prefs!.piece_types, { id, label }]
+    update('piece_types', piece_types)
+    setNewPieceTypeLabel('')
   }
 
   // ── Save ──────────────────────────────────────────────────────────────────
@@ -143,6 +182,89 @@ export default function PreferencesPage() {
               placeholder="e.g. ^6, ^10"
             />
           </div>
+        </div>
+      </section>
+
+      <section className="space-y-4 bg-white rounded-xl border border-stone-200 p-6">
+        <div>
+          <h2 className="text-base font-semibold text-stone-800">Piece Types</h2>
+          <p className="text-xs text-stone-500 mt-1">
+            Manage the types of pieces you make. Set a default to pre-fill new pieces.
+          </p>
+        </div>
+
+        <div className="space-y-2">
+          {prefs.piece_types.map((pt: PieceType, idx: number) => (
+            <div key={pt.id} className="flex items-center gap-2">
+              <Input
+                value={pt.label}
+                onChange={(e) => updatePieceTypeLabel(idx, e.target.value)}
+                className="flex-1"
+              />
+              <button
+                type="button"
+                disabled={idx === 0}
+                onClick={() => movePieceType(idx, -1)}
+                className="px-2 py-1 text-xs rounded border border-stone-200 text-stone-500 hover:bg-stone-50 disabled:opacity-30 disabled:cursor-not-allowed"
+                aria-label="Move up"
+              >
+                ↑
+              </button>
+              <button
+                type="button"
+                disabled={idx === prefs.piece_types.length - 1}
+                onClick={() => movePieceType(idx, 1)}
+                className="px-2 py-1 text-xs rounded border border-stone-200 text-stone-500 hover:bg-stone-50 disabled:opacity-30 disabled:cursor-not-allowed"
+                aria-label="Move down"
+              >
+                ↓
+              </button>
+              <button
+                type="button"
+                disabled={prefs.piece_types.length <= 1}
+                onClick={() => deletePieceType(idx)}
+                className="px-2 py-1 text-xs rounded border border-stone-200 text-red-400 hover:bg-red-50 disabled:opacity-30 disabled:cursor-not-allowed"
+                aria-label="Delete piece type"
+              >
+                ✕
+              </button>
+            </div>
+          ))}
+        </div>
+
+        <div className="flex gap-2">
+          <Input
+            value={newPieceTypeLabel}
+            onChange={(e) => setNewPieceTypeLabel(e.target.value)}
+            placeholder="New type name..."
+            className="flex-1"
+            onKeyDown={(e) => { if (e.key === 'Enter') addPieceType() }}
+          />
+          <Button
+            variant="outline"
+            onClick={addPieceType}
+            disabled={!newPieceTypeLabel.trim()}
+          >
+            Add type
+          </Button>
+        </div>
+
+        <div className="space-y-2">
+          <Label>Default piece type</Label>
+          <Select
+            value={prefs.default_piece_type || ''}
+            onValueChange={(v) => update('default_piece_type', v || undefined)}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select..." />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">None</SelectItem>
+              {prefs.piece_types.map((pt: PieceType) => (
+                <SelectItem key={pt.id} value={pt.id}>{pt.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </section>
 

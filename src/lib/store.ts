@@ -1,6 +1,6 @@
 'use client'
 
-import { Piece, UserPreferences, SurfaceLayer, Stage } from '@/types'
+import { Piece, UserPreferences, SurfaceLayer, Stage, PieceType } from '@/types'
 import { generateId } from './utils'
 
 export const DEFAULT_STAGES: Stage[] = [
@@ -10,6 +10,15 @@ export const DEFAULT_STAGES: Stage[] = [
   { id: 'bisque_fired', label: 'Bisque Fired' },
   { id: 'glaze_firing', label: 'Glaze Firing' },
   { id: 'glaze_fired', label: 'Glaze Fired' },
+]
+
+export const DEFAULT_PIECE_TYPES: PieceType[] = [
+  { id: 'cup',       label: 'Cup' },
+  { id: 'bowl',      label: 'Bowl' },
+  { id: 'plate',     label: 'Plate' },
+  { id: 'sculpture', label: 'Sculpture' },
+  { id: 'vase',      label: 'Vase' },
+  { id: 'container', label: 'Container' },
 ]
 
 const PIECES_KEY = 'pottery_pieces'
@@ -68,6 +77,7 @@ export function createNewPiece(overrides: Partial<Piece> = {}): Piece {
     clay_body: prefs.default_clay_body,
     firing_type: prefs.default_firing_type,
     cone: prefs.default_cone,
+    piece_type: prefs.default_piece_type,
     surface_layers: prefs.default_surface_layers.map((l) => ({ ...l, id: generateId() })),
     photos: [],
     tags: [],
@@ -93,7 +103,7 @@ export function advanceStage(piece: Piece): Piece {
 }
 
 export function getPreferences(): UserPreferences {
-  return load<UserPreferences>(PREFS_KEY, {
+  const prefs = load<UserPreferences>(PREFS_KEY, {
     id: generateId(),
     user_id: 'local',
     favorite_clay_bodies: [],
@@ -101,7 +111,12 @@ export function getPreferences(): UserPreferences {
     default_surface_layers: [],
     stages: DEFAULT_STAGES,
     default_stage: 'not_started',
+    piece_types: DEFAULT_PIECE_TYPES,
   })
+  if (!prefs.piece_types || prefs.piece_types.length === 0) {
+    prefs.piece_types = DEFAULT_PIECE_TYPES
+  }
+  return prefs
 }
 
 export function getStages(): Stage[] {

@@ -4,12 +4,14 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   Piece,
+  PieceType,
+  Stage,
   FORMING_METHOD_LABELS,
   FIRING_TYPE_LABELS,
   FormingMethod,
   FiringType,
 } from '@/types'
-import { savePiece } from '@/lib/store'
+import { savePiece, getPreferences } from '@/lib/store'
 import { Button } from './ui/button'
 import { Input } from './ui/input'
 import { Textarea } from './ui/textarea'
@@ -27,6 +29,7 @@ export function PieceForm({ initialPiece, isNew }: PieceFormProps) {
   const router = useRouter()
   const [piece, setPiece] = useState<Piece>(initialPiece)
   const [saving, setSaving] = useState(false)
+  const prefs = getPreferences()
 
   function update<K extends keyof Piece>(key: K, value: Piece[K]) {
     setPiece((prev) => ({ ...prev, [key]: value }))
@@ -63,6 +66,41 @@ export function PieceForm({ initialPiece, isNew }: PieceFormProps) {
             placeholder="What are you making? Any notes on intent or inspiration..."
             rows={3}
           />
+        </div>
+
+        <div className="space-y-2">
+          <Label>Stage</Label>
+          <Select
+            value={piece.stage}
+            onValueChange={(v) => update('stage', v)}
+            required
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select stage..." />
+            </SelectTrigger>
+            <SelectContent>
+              {prefs.stages.map((s: Stage) => (
+                <SelectItem key={s.id} value={s.id}>{s.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="space-y-2">
+          <Label>Piece Type</Label>
+          <Select
+            value={piece.piece_type || ''}
+            onValueChange={(v) => update('piece_type', v || undefined)}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select type..." />
+            </SelectTrigger>
+            <SelectContent>
+              {prefs.piece_types.map((pt: PieceType) => (
+                <SelectItem key={pt.id} value={pt.id}>{pt.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         <div className="space-y-2">

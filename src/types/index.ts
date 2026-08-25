@@ -5,6 +5,11 @@ export type Stage = {
   label: string
 }
 
+export type PieceType = {
+  id: string
+  label: string
+}
+
 export type SurfaceLayerType =
   | 'glaze'
   | 'underglaze'
@@ -65,6 +70,7 @@ export type Piece = {
   bisque_temp_c?: number
   glaze_temp_c?: number
   cone?: string
+  piece_type?: string
   surface_layers: SurfaceLayer[]
   photos: PiecePhoto[]
   started_at?: string
@@ -96,6 +102,8 @@ export type UserPreferences = {
   default_surface_layers: SurfaceLayer[]
   stages: Stage[]
   default_stage?: string
+  piece_types: PieceType[]
+  default_piece_type?: string
 }
 
 export type FavoriteSurfaceProduct = {
