@@ -77,6 +77,7 @@ export function createNewPiece(overrides: Partial<Piece> = {}): Piece {
     clay_body: prefs.default_clay_body,
     firing_type: prefs.default_firing_type,
     cone: prefs.default_cone,
+    piece_type: prefs.default_piece_type,
     surface_layers: prefs.default_surface_layers.map((l) => ({ ...l, id: generateId() })),
     photos: [],
     tags: [],
