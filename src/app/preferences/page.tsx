@@ -24,6 +24,9 @@ export default function PreferencesPage() {
     if (!loaded.default_stage) {
       loaded.default_stage = loaded.stages[0]?.id
     }
+    if (!loaded.piece_types || loaded.piece_types.length === 0) {
+      loaded.piece_types = DEFAULT_PIECE_TYPES
+    }
     setPrefs(loaded)
   }, [])
 
