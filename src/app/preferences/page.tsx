@@ -13,6 +13,7 @@ export default function PreferencesPage() {
   const [prefs, setPrefs] = useState<UserPreferences | null>(null)
   const [saved, setSaved] = useState(false)
   const [newStageLabel, setNewStageLabel] = useState('')
+  const [newPieceTypeLabel, setNewPieceTypeLabel] = useState('')
 
   useEffect(() => {
     const loaded = getPreferences()
