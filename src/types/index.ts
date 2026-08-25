@@ -5,6 +5,11 @@ export type Stage = {
   label: string
 }
 
+export type PieceType = {
+  id: string
+  label: string
+}
+
 export type SurfaceLayerType =
   | 'glaze'
   | 'underglaze'
