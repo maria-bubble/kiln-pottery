@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import {
   Piece,
   PieceType,
+  Stage,
   FORMING_METHOD_LABELS,
   FIRING_TYPE_LABELS,
   FormingMethod,
