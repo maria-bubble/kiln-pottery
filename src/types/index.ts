@@ -70,6 +70,7 @@ export type Piece = {
   bisque_temp_c?: number
   glaze_temp_c?: number
   cone?: string
+  piece_type?: string
   surface_layers: SurfaceLayer[]
   photos: PiecePhoto[]
   started_at?: string
