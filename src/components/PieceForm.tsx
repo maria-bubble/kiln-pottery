@@ -28,6 +28,7 @@ export function PieceForm({ initialPiece, isNew }: PieceFormProps) {
   const router = useRouter()
   const [piece, setPiece] = useState<Piece>(initialPiece)
   const [saving, setSaving] = useState(false)
+  const prefs = getPreferences()
 
   function update<K extends keyof Piece>(key: K, value: Piece[K]) {
     setPiece((prev) => ({ ...prev, [key]: value }))
